@@ -53,13 +53,17 @@ class MockHttpClientResponse(aiohttp.client_reqrep.ClientResponse):
 def patch_aiobotocore():
     def factory(original: Callable) -> Callable:
         def patched_convert_to_response_dict(
-            http_response: botocore.awsrequest.AWSResponse, operation_model: botocore.model.OperationModel
+            http_response: botocore.awsrequest.AWSResponse,
+            operation_model: botocore.model.OperationModel,
         ):
             return original(MockAWSResponse(http_response), operation_model)
 
         return patched_convert_to_response_dict
 
-    aiobotocore.endpoint.convert_to_response_dict = factory(aiobotocore.endpoint.convert_to_response_dict)
+    aiobotocore.endpoint.convert_to_response_dict = factory(
+        aiobotocore.endpoint.convert_to_response_dict
+    )
+
 
 aiobotocore.endpoint.convert_to_response_dict = patch_aiobotocore()
 
