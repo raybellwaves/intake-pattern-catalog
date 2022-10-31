@@ -14,7 +14,6 @@ from intake_pattern_catalog import PatternCatalog
 # from pandas.testing import assert_frame_equal
 
 
-
 @pytest.fixture(
     params=["file://{file}.csv", "simplecache::file://{file}.csv", "{file}.csv"]
 )
