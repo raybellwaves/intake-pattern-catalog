@@ -1,4 +1,5 @@
 import os
+from typing import Callable
 from unittest.mock import MagicMock
 
 import aiobotocore.awsrequest
@@ -49,7 +50,18 @@ class MockHttpClientResponse(aiohttp.client_reqrep.ClientResponse):
         }.items()
 
 
-aiobotocore.endpoint.convert_to_response_dict = MonkeyPatchedAWSResponse(botocore.awsrequest.AWSResponse)
+def patch_aiobotocore():
+    def factory(original: Callable) -> Callable:
+        def patched_convert_to_response_dict(
+            http_response: botocore.awsrequest.AWSResponse, operation_model: botocore.model.OperationModel
+        ):
+            return original(MockAWSResponse(http_response), operation_model)
+
+        return patched_convert_to_response_dict
+
+    aiobotocore.endpoint.convert_to_response_dict = factory(aiobotocore.endpoint.convert_to_response_dict)
+
+aiobotocore.endpoint.convert_to_response_dict = patch_aiobotocore()
 
 
 @pytest.fixture(scope="function")
