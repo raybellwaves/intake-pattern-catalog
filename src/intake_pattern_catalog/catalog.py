@@ -67,8 +67,8 @@ class PatternCatalog(Catalog):
 
         storage_options = kwargs.pop("storage_options", {})
 
-        # Set use_listing_cache to False so that once the ttl runs
-        # out, the fsspec cache doesn't keep the entry list from getting updated
+        # Set use_listing_cache to False so that once the ttl runs out,
+        # the fsspec cache doesn't keep the entry list from getting updated
         if "use_listings_cache" not in storage_options:
             storage_options["use_listings_cache"] = False
         super(PatternCatalog, self).__init__(

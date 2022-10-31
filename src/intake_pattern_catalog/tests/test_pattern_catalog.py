@@ -49,19 +49,33 @@ def test_no_ttl_s3(example_bucket, s3, patch_aiobotocore):
     assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
 
 
-def test_ttl_s3(example_bucket, s3, patch_aiobotocore):
+def test_no_ttl_s32(example_bucket, s3, patch_aiobotocore):
+
     cat = PatternCatalog(
         name="cat",
         urlpath="s3://" + example_bucket + "/{num}.csv",
         driver="csv",
-        ttl=0.1,
+        ttl=-1,
     )
     assert cat.get_entry_kwarg_sets() == []
-    s3.put_object(Body="", Bucket=example_bucket, Key="1.csv")
-    s3.put_object(Body="", Bucket=example_bucket, Key="2.csv")
-    assert cat.get_entry_kwarg_sets() == []
-    sleep(0.11)
-    assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
+    s3.put_object(Body="", Bucket=example_bucket, Key="3.csv")
+    s3.put_object(Body="", Bucket=example_bucket, Key="4.csv")
+    assert cat.get_entry_kwarg_sets() == [{"num": "3"}, {"num": "4"}]
+
+
+# def test_ttl_s3(example_bucket, s3, patch_aiobotocore):
+#     cat = PatternCatalog(
+#         name="cat",
+#         urlpath="s3://" + example_bucket + "/{num}.csv",
+#         driver="csv",
+#         ttl=0.1,
+#     )
+#     assert cat.get_entry_kwarg_sets() == []
+#     s3.put_object(Body="", Bucket=example_bucket, Key="1.csv")
+#     s3.put_object(Body="", Bucket=example_bucket, Key="2.csv")
+#     assert cat.get_entry_kwarg_sets() == []
+#     sleep(0.11)
+#     assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
 
 
 # def test_ttl_s3_parquet(example_bucket, s3):
@@ -161,7 +175,7 @@ def test_ttl_s3(example_bucket, s3, patch_aiobotocore):
 #     assert len(cat) == 1
 
 
-# def test_walk(example_bucket, s3):
+# def test_walk(example_bucket, s3, patch_aiobotocore):
 
 #     s3.put_object(Body="", Bucket=example_bucket, Key="abcd.csv")
 #     s3.put_object(Body="", Bucket=example_bucket, Key="efgh.csv")
