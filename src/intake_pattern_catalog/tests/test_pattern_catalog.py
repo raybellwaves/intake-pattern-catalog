@@ -1,13 +1,13 @@
 from pathlib import Path
 
+# from tempfile import TemporaryDirectory
+from time import sleep
+
 # import intake
 # import pandas as pd
 import pytest
 
 from intake_pattern_catalog import PatternCatalog
-
-# from tempfile import TemporaryDirectory
-from time import sleep
 
 # from typing import Generator
 
