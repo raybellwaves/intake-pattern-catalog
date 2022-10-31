@@ -51,16 +51,16 @@ def test_no_ttl_s3(example_bucket, s3, patch_aiobotocore):
 
 def test_no_ttl_s32(example_bucket, s3, patch_aiobotocore):
 
-    cat = PatternCatalog(
+    cat2 = PatternCatalog(
         name="cat",
         urlpath="s3://" + example_bucket + "/{num}.csv",
         driver="csv",
         ttl=-1,
     )
-    assert cat.get_entry_kwarg_sets() == []
+    assert cat2.get_entry_kwarg_sets() == []
     s3.put_object(Body="", Bucket=example_bucket, Key="3.csv")
     s3.put_object(Body="", Bucket=example_bucket, Key="4.csv")
-    assert cat.get_entry_kwarg_sets() == [{"num": "3"}, {"num": "4"}]
+    assert cat2.get_entry_kwarg_sets() == [{"num": "3"}, {"num": "4"}]
 
 
 # def test_ttl_s3(example_bucket, s3, patch_aiobotocore):
