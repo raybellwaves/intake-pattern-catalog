@@ -50,20 +50,7 @@ class MockHttpClientResponse(aiohttp.client_reqrep.ClientResponse):
         }.items()
 
 
-@pytest.fixture
-def patch_aiobotocore():
-    def factory(original: Callable) -> Callable:
-        def patched_convert_to_response_dict(
-            http_response: botocore.awsrequest.AWSResponse,
-            operation_model: botocore.model.OperationModel,
-        ):
-            return original(MonkeyPatchedAWSResponse(http_response), operation_model)
-
-        return patched_convert_to_response_dict
-
-    aiobotocore.endpoint.convert_to_response_dict = factory(
-        aiobotocore.endpoint.convert_to_response_dict
-    )
+aiobotocore.endpoint.convert_to_response_dict = MonkeyPatchedAWSResponse
 
 
 @pytest.fixture(scope="function")
