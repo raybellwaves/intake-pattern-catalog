@@ -7,7 +7,7 @@ import pytest
 from intake_pattern_catalog import PatternCatalog
 
 # from tempfile import TemporaryDirectory
-# from time import sleep
+from time import sleep
 # from typing import Generator
 
 
@@ -48,19 +48,19 @@ def test_no_ttl_s3(example_bucket, s3, patch_aiobotocore):
     assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
 
 
-# def test_ttl_s3(example_bucket, s3):
-#     cat = PatternCatalog(
-#         name="cat",
-#         urlpath="s3://" + example_bucket + "/{num}.csv",
-#         driver="csv",
-#         ttl=0.1,
-#     )
-#     assert cat.get_entry_kwarg_sets() == []
-#     s3.put_object(Body="", Bucket=example_bucket, Key="1.csv")
-#     s3.put_object(Body="", Bucket=example_bucket, Key="2.csv")
-#     assert cat.get_entry_kwarg_sets() == []
-#     sleep(0.11)
-#     assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
+def test_ttl_s3(example_bucket, s3):
+    cat = PatternCatalog(
+        name="cat",
+        urlpath="s3://" + example_bucket + "/{num}.csv",
+        driver="csv",
+        ttl=0.1,
+    )
+    assert cat.get_entry_kwarg_sets() == []
+    s3.put_object(Body="", Bucket=example_bucket, Key="1.csv")
+    s3.put_object(Body="", Bucket=example_bucket, Key="2.csv")
+    assert cat.get_entry_kwarg_sets() == []
+    sleep(0.11)
+    assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
 
 
 # def test_ttl_s3_parquet(example_bucket, s3):
