@@ -8,6 +8,7 @@ from intake_pattern_catalog import PatternCatalog
 
 # from tempfile import TemporaryDirectory
 from time import sleep
+
 # from typing import Generator
 
 
