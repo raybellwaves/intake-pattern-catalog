@@ -48,7 +48,7 @@ def test_no_ttl_s3(example_bucket, s3, patch_aiobotocore):
     assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
 
 
-def test_ttl_s3(example_bucket, s3):
+def test_ttl_s3(example_bucket, s3, patch_aiobotocore):
     cat = PatternCatalog(
         name="cat",
         urlpath="s3://" + example_bucket + "/{num}.csv",
