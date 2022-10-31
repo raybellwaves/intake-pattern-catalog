@@ -33,7 +33,6 @@ class MockAWSResponse(aiobotocore.awsrequest.AioAWSResponse):
 
 class MockHttpClientResponse(aiohttp.client_reqrep.ClientResponse):
     def __init__(self, response: botocore.awsrequest.AWSResponse):
-    
         async def read(self, n: int = -1) -> bytes:
             # streaming/range requests. used by s3fs
             return response.content
@@ -45,20 +44,26 @@ class MockHttpClientResponse(aiohttp.client_reqrep.ClientResponse):
     @property
     def raw_headers(self) -> aiohttp.typedefs.RawHeaders:
         # Return the headers encoded the way that aiobotocore expects them
-        return { k.encode('utf-8') : str(v).encode('utf-8') for k, v in self.response.headers.items() }.items()
+        return {
+            k.encode("utf-8"): str(v).encode("utf-8")
+            for k, v in self.response.headers.items()
+        }.items()
 
 
 @pytest.fixture
 def patch_aiobotocore():
     def factory(original: Callable) -> Callable:
         def patched_convert_to_response_dict(
-            http_response: botocore.awsrequest.AWSResponse, operation_model: botocore.model.OperationModel
+            http_response: botocore.awsrequest.AWSResponse,
+            operation_model: botocore.model.OperationModel,
         ):
             return original(MockAWSResponse(http_response), operation_model)
 
         return patched_convert_to_response_dict
 
-    aiobotocore.endpoint.convert_to_response_dict = factory(aiobotocore.endpoint.convert_to_response_dict)
+    aiobotocore.endpoint.convert_to_response_dict = factory(
+        aiobotocore.endpoint.convert_to_response_dict
+    )
 
 
 @pytest.fixture(scope="function")
