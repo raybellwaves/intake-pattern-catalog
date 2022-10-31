@@ -49,7 +49,7 @@ class MockHttpClientResponse(aiohttp.client_reqrep.ClientResponse):
         }.items()
 
 
-aiobotocore.endpoint.convert_to_response_dict = MonkeyPatchedAWSResponse
+aiobotocore.endpoint.convert_to_response_dict = MonkeyPatchedAWSResponse(botocore.awsrequest.AWSResponse)
 
 
 @pytest.fixture(scope="function")
