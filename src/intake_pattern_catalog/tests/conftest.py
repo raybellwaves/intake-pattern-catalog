@@ -44,10 +44,11 @@ class MockHttpClientResponse(aiohttp.client_reqrep.ClientResponse):
     @property
     def raw_headers(self) -> aiohttp.typedefs.RawHeaders:
         # Return the headers encoded the way that aiobotocore expects them
-        return {
-            k.encode("utf-8"): str(v).encode("utf-8")
-            for k, v in self.response.headers.items()
-        }.items()
+        # return {
+        #     k.encode("utf-8"): str(v).encode("utf-8")
+        #     for k, v in self.response.headers.items()
+        # }.items()
+        return None
 
 
 @pytest.fixture
