@@ -17,7 +17,7 @@ from moto import mock_s3
 # This is necessary because of this issue
 # https://github.com/aio-libs/aiobotocore/issues/755
 # copied from https://gist.github.com/giles-betteromics/12e68b88e261402fbe31c2e918ea4168
-class MonkeyPatchedAWSResponse(aiobotocore.awsrequest.AioAWSResponse):
+class MockAWSResponse(aiobotocore.awsrequest.AioAWSResponse):
     def __init__(self, response: botocore.awsrequest.AWSResponse):
         self._moto_response = response
         self.status_code = response.status_code
