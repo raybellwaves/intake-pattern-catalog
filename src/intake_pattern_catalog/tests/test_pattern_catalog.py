@@ -35,47 +35,35 @@ def test_pattern_generation(empty_catalog):
     assert empty_catalog._pattern == str(actual)
 
 
-def test_no_ttl_s3(example_bucket, s3, patch_aiobotocore):
-
+def test_no_ttl_s3(s3):
     cat = PatternCatalog(
         name="cat",
-        urlpath="s3://" + example_bucket + "/{num}.csv",
+        urlpath="s3://test/{num}.csv",
         driver="csv",
         ttl=-1,
+        storage_options={"client_kwargs": {"endpoint_url": "http://localhost:5555"}},
     )
     assert cat.get_entry_kwarg_sets() == []
-    s3.put_object(Body="", Bucket=example_bucket, Key="1.csv")
-    s3.put_object(Body="", Bucket=example_bucket, Key="2.csv")
+    s3.touch("test/1.csv")
+    s3.touch("test/2.csv")
     assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
 
 
-def test_no_ttl_s32(example_bucket, s3, patch_aiobotocore):
-
-    cat2 = PatternCatalog(
+def test_ttl_s3(s3):
+    s3.read_timeout = 0.1
+    cat = PatternCatalog(
         name="cat",
-        urlpath="s3://" + example_bucket + "/{num}.csv",
+        urlpath="s3://test/{num}.csv",
         driver="csv",
-        ttl=-1,
+        ttl=0.1,
+        storage_options={"client_kwargs": {"endpoint_url": "http://localhost:5555"}},
     )
-    assert cat2.get_entry_kwarg_sets() == []
-    s3.put_object(Body="", Bucket=example_bucket, Key="3.csv")
-    s3.put_object(Body="", Bucket=example_bucket, Key="4.csv")
-    assert cat2.get_entry_kwarg_sets() == [{"num": "3"}, {"num": "4"}]
-
-
-# def test_ttl_s3(example_bucket, s3, patch_aiobotocore):
-#     cat = PatternCatalog(
-#         name="cat",
-#         urlpath="s3://" + example_bucket + "/{num}.csv",
-#         driver="csv",
-#         ttl=0.1,
-#     )
-#     assert cat.get_entry_kwarg_sets() == []
-#     s3.put_object(Body="", Bucket=example_bucket, Key="1.csv")
-#     s3.put_object(Body="", Bucket=example_bucket, Key="2.csv")
-#     assert cat.get_entry_kwarg_sets() == []
-#     sleep(0.11)
-#     assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
+    assert cat.get_entry_kwarg_sets() == []
+    s3.touch("test/1.csv")
+    s3.touch("test/2.csv")
+    assert cat.get_entry_kwarg_sets() == []
+    sleep(0.11)
+    assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
 
 
 # def test_ttl_s3_parquet(example_bucket, s3):
