@@ -35,22 +35,22 @@ def test_pattern_generation(empty_catalog):
     assert empty_catalog._pattern == str(actual)
 
 
-def test_no_ttl_s3(s3):
-    cat = PatternCatalog(
-        name="cat",
-        urlpath="s3://test/{num}.csv",
-        driver="csv",
-        ttl=-1,
-        storage_options={"client_kwargs": {"endpoint_url": "http://localhost:5555"}},
-    )
-    assert cat.get_entry_kwarg_sets() == []
-    s3.touch("test/1.csv")
-    s3.touch("test/2.csv")
-    assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
+# def test_no_ttl_s3(s3):
+#     cat = PatternCatalog(
+#         name="cat",
+#         urlpath="s3://test/{num}.csv",
+#         driver="csv",
+#         ttl=-1,
+#         storage_options={"client_kwargs": {"endpoint_url": "http://localhost:5555"}},
+#     )
+#     assert cat.get_entry_kwarg_sets() == []
+#     s3.touch("test/1.csv")
+#     s3.touch("test/2.csv")
+#     assert cat.get_entry_kwarg_sets() == [{"num": "1"}, {"num": "2"}]
 
 
 def test_ttl_s3(s3):
-    s3.read_timeout = 0.1
+
     cat = PatternCatalog(
         name="cat",
         urlpath="s3://test/{num}.csv",
